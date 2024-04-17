@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { SearchBar } from './SearchBar/SearchBar';
@@ -13,7 +13,14 @@ const INITIAL_STATE = {
 };
 
 export const App = () => {
-  const [userData, setUserData] = useState(INITIAL_STATE);
+  const [userData, setUserData] = useState(() => {
+    const savedUserData = localStorage.getItem('user-data');
+    return savedUserData ? JSON.parse(savedUserData) : INITIAL_STATE;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('user-data', JSON.stringify(userData));
+  }, [userData]);
 
   const onChange = event => {
     setUserData({ ...userData, [event.target.name]: event.target.value });
